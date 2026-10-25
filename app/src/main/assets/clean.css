@@ -1,0 +1,40 @@
+/* ClearTube: injected into m.youtube.com.
+ * Selectors are best-effort. YouTube renames things now and then; when a part stops working,
+ * open chrome://inspect on a PC, inspect the page inside the app and fix the selector here. */
+
+/* 1. YouTube's own header and bottom bar are replaced by the native ones */
+ytm-mobile-topbar-renderer,
+ytm-pivot-bar-renderer,
+header.mobile-topbar-header { display: none !important; }
+
+/* the page normally leaves room for the (now hidden) header: TUNE THIS FIRST if there is a gap on top */
+ytm-app, .page-container { padding-top: 0 !important; margin-top: 0 !important; }
+
+/* 2. ads that are drawn in the page */
+ytm-promoted-sparkles-web-renderer, ytm-promoted-video-renderer, ytm-compact-promoted-video-renderer,
+ytm-ad-slot-renderer, ytm-in-feed-ad-layout-renderer, ytm-companion-slot, ytm-statement-banner-renderer,
+ytm-banner-promo-renderer, ytm-mealbar-promo-renderer, ytm-brand-video-singleton-renderer,
+.video-ads, .ytp-ad-module, .ytp-ad-overlay-container, .ytp-ad-image-overlay { display: none !important; }
+
+/* 3. look: rounded thumbnails, no scrollbars, no grey tap flash */
+html, body { -webkit-tap-highlight-color: transparent; }
+::-webkit-scrollbar { display: none; }
+ytm-thumbnail-cover, .video-thumbnail-container-large, .video-thumbnail-container-compact,
+ytm-media-item .media-item-thumbnail-container { border-radius: 16px !important; overflow: hidden; }
+
+/* room for the floating search bar at the bottom */
+ytm-browse, ytm-search { padding-bottom: 96px !important; }
+
+/* 4. animations: cards float in, and squish a little when pressed (same feel as the native bars) */
+@keyframes ctIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+ytm-rich-item-renderer, ytm-video-with-context-renderer, ytm-compact-video-renderer {
+  animation: ctIn .42s cubic-bezier(.2, 0, 0, 1) both;
+  transition: transform .28s cubic-bezier(.2, 0, 0, 1);
+}
+ytm-rich-item-renderer:active, ytm-video-with-context-renderer:active, ytm-compact-video-renderer:active {
+  transform: scale(.97);
+  transition-duration: .1s;
+}
+@media (prefers-reduced-motion: reduce) {
+  ytm-rich-item-renderer, ytm-video-with-context-renderer, ytm-compact-video-renderer { animation: none; }
+}
