@@ -4,13 +4,10 @@ import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -111,16 +108,9 @@ fun ClearTubeRoot(b: YtBrowser) {
                         translationY = (1f - pageAlpha) * 40f
                     }
                 )
-                // Give AnimatedVisibility an explicit BoxScope so Kotlin doesn't
-                // resolve the outer ColumnScope overload.
-                Box(Modifier.fillMaxSize()) {
-                    AnimatedVisibility(
-                        visible = showSkeleton,
-                        enter = fadeIn(tween(150)),
-                        exit = fadeOut(tween(300))
-                    ) {
-                        FeedSkeleton(Modifier.background(p.bg))
-                    }
+                // Keep the loading skeleton simple to avoid receiver-scope overload issues.
+                if (showSkeleton) {
+                    FeedSkeleton(Modifier.background(p.bg))
                 }
             }
         }
