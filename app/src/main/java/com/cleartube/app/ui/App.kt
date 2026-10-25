@@ -111,8 +111,16 @@ fun ClearTubeRoot(b: YtBrowser) {
                         translationY = (1f - pageAlpha) * 40f
                     }
                 )
-                AnimatedVisibility(showSkeleton, enter = fadeIn(tween(150)), exit = fadeOut(tween(300))) {
-                    FeedSkeleton(Modifier.background(p.bg))
+                // Give AnimatedVisibility an explicit BoxScope so Kotlin doesn't
+                // resolve the outer ColumnScope overload.
+                Box(Modifier.fillMaxSize()) {
+                    AnimatedVisibility(
+                        visible = showSkeleton,
+                        enter = fadeIn(tween(150)),
+                        exit = fadeOut(tween(300))
+                    ) {
+                        FeedSkeleton(Modifier.background(p.bg))
+                    }
                 }
             }
         }
